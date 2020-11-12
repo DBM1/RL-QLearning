@@ -1,5 +1,6 @@
 import argparse
 
+
 # import torch
 
 
@@ -38,6 +39,5 @@ def get_args():
         default=10,
         help='save interval, one eval per n updates (default: None)')
     args = parser.parse_args()
-
 
     return args
