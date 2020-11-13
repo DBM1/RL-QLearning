@@ -4,6 +4,8 @@ from keras import Model
 from keras import layers, optimizers, activations, losses, utils
 
 
+
+
 class NNModel(Model):
     def __init__(self):
         super(NNModel, self).__init__()

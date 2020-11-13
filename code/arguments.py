@@ -32,7 +32,7 @@ def get_args():
     parser.add_argument(
         '--save-img',
         type=bool,
-        default=True)
+        default=False)
     parser.add_argument(
         '--save-interval',
         type=int,

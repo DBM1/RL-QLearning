@@ -1,5 +1,5 @@
 from arguments import get_args
-from algo import QAgent
+from algo import QAgent, MyQAgent
 import numpy as np
 import time
 import gym
@@ -20,10 +20,10 @@ def plot(record):
                     color='blue', alpha=0.2)
     ax.set_xlabel('number of steps')
     ax.set_ylabel('Average score per episode')
-    ax1 = ax.twinx()
-    ax1.plot(record['steps'], record['query'],
-             color='red', label='query')
-    ax1.set_ylabel('queries')
+    # ax1 = ax.twinx()
+    # ax1.plot(record['steps'], record['query'],
+    #          color='red', label='query')
+    # ax1.set_ylabel('queries')
     reward_patch = mpatches.Patch(lw=1, linestyle='-', color='blue', label='score')
     query_patch = mpatches.Patch(lw=1, linestyle='-', color='red', label='query')
     patch_set = [reward_patch, query_patch]
@@ -72,7 +72,7 @@ def main():
     # agent initial
     # you should finish your agent with QAgent
     # e.g. agent = myQAgent()
-    agent = QAgent()
+    agent = MyQAgent(lr=0.1, replay_size=50)
 
     # start to train your agent
     for i in range(num_updates):
@@ -88,6 +88,7 @@ def main():
 
             # interact with the environment
             obs_next, reward, done, info = envs.step(action)
+            agent.update_table(obs, action, obs_next, reward)
             obs = obs_next
             if done:
                 envs.reset()
@@ -130,6 +131,10 @@ def main():
             record['mean'].append(np.mean(reward_episode_set))
             record['max'].append(np.max(reward_episode_set))
             record['min'].append(np.min(reward_episode_set))
+            if np.mean(reward_episode_set) > 80:
+                agent.lr = 0.05
+                if np.mean(reward_episode_set) > 90:
+                    agent.lr = 0.01
             plot(record)
 
 
