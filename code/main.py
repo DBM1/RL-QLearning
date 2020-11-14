@@ -25,8 +25,7 @@ def plot(record):
     #          color='red', label='query')
     # ax1.set_ylabel('queries')
     reward_patch = mpatches.Patch(lw=1, linestyle='-', color='blue', label='score')
-    query_patch = mpatches.Patch(lw=1, linestyle='-', color='red', label='query')
-    patch_set = [reward_patch, query_patch]
+    patch_set = [reward_patch]
     ax.legend(handles=patch_set)
     fig.savefig('performance.png')
 
@@ -72,7 +71,7 @@ def main():
     # agent initial
     # you should finish your agent with QAgent
     # e.g. agent = myQAgent()
-    agent = MyQAgent(lr=0.1, replay_size=50)
+    agent = MyQAgent(lr=0.1, replay_size=100)
 
     # start to train your agent
     for i in range(num_updates):
