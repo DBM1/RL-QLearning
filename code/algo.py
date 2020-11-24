@@ -51,7 +51,7 @@ class MyQAgent(QAgent):
         for s, a, sp, r in self.replay_pool:
             self.q_table[s][a] += self.lr * (r + self.discount * np.max(self.q_table[sp]) - self.q_table[s][a])
 
-        if len(self.replay_pool) <= self.replay_size:
+        if len(self.replay_pool) < self.replay_size:
             self.replay_pool.append((s, a, sp, r))
         elif self.replay_size is not 0:
             self.replay_pool[np.random.randint(self.replay_size)] = (s, a, sp, r)

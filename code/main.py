@@ -77,9 +77,10 @@ def main():
     for i in range(num_updates):
         # an example of interacting with the environment
         obs = envs.reset()
+        sample_list = []
         for step in range(args.num_steps):
             # Sample actions with epsilon greedy policy
-            epsilon = 1
+            epsilon = 0.2
             if np.random.rand() < epsilon:
                 action = envs.action_sample()
             else:
@@ -87,7 +88,7 @@ def main():
 
             # interact with the environment
             obs_next, reward, done, info = envs.step(action)
-            agent.update_table(obs, action, obs_next, reward)
+            sample_list.append((obs, action, obs_next, reward))
             obs = obs_next
             if done:
                 envs.reset()
@@ -97,6 +98,8 @@ def main():
                 scipy.misc.toimage(info, cmin=0.0, cmax=1).save('imgs/example.jpeg')
 
         # you should finish your Q-learning algorithm here
+        for obs, action, obs_next, reward in sample_list:
+            agent.update_table(obs, action, obs_next, reward)
 
         if (i + 1) % args.log_interval == 0:
             total_num_steps = (i + 1) * args.num_steps
