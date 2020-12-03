@@ -18,7 +18,7 @@ def convert_obs(obs):
 
 
 class MyQAgent(QAgent):
-    def __init__(self, lr=0.1, discount=0.8, action_num=4, replay_size=10):
+    def __init__(self, lr=0.1, discount=0.8, action_num=4, replay_size=100):
         super(MyQAgent, self).__init__()
         self.lr = lr
         self.discount = discount

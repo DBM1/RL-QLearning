@@ -38,6 +38,20 @@ def get_args():
         type=int,
         default=10,
         help='save interval, one eval per n updates (default: None)')
+
+    ## customize parameter
+    parser.add_argument(
+        '--auto-learning-rate',
+        type=bool,
+        default=True,
+        help='enable auto learning rate')
+
+    parser.add_argument(
+        '--batch-update',
+        type=bool,
+        default=True,
+        help='batch update Q table')
+
     args = parser.parse_args()
 
     return args

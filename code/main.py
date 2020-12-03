@@ -71,7 +71,7 @@ def main():
     # agent initial
     # you should finish your agent with QAgent
     # e.g. agent = myQAgent()
-    agent = MyQAgent(lr=0.1, replay_size=100)
+    agent = MyQAgent()
 
     # start to train your agent
     for i in range(num_updates):
@@ -88,18 +88,22 @@ def main():
 
             # interact with the environment
             obs_next, reward, done, info = envs.step(action)
-            sample_list.append((obs, action, obs_next, reward))
+            if not args.batch_update:
+                agent.update_table(obs, action, obs_next, reward)
+            else:
+                sample_list.append((obs, action, obs_next, reward))
             obs = obs_next
             if done:
-                envs.reset()
+                obs = envs.reset()
 
             # an example of saving observations
             if args.save_img:
                 scipy.misc.toimage(info, cmin=0.0, cmax=1).save('imgs/example.jpeg')
 
         # you should finish your Q-learning algorithm here
-        for obs, action, obs_next, reward in sample_list:
-            agent.update_table(obs, action, obs_next, reward)
+        if args.batch_update:
+            for obs, action, obs_next, reward in sample_list:
+                agent.update_table(obs, action, obs_next, reward)
 
         if (i + 1) % args.log_interval == 0:
             total_num_steps = (i + 1) * args.num_steps
@@ -116,7 +120,7 @@ def main():
                 if done:
                     reward_episode_set.append(reward_episode)
                     reward_episode = 0
-                    envs.reset()
+                    obs = envs.reset()
 
             end = time.time()
             print(
@@ -133,11 +137,14 @@ def main():
             record['mean'].append(np.mean(reward_episode_set))
             record['max'].append(np.max(reward_episode_set))
             record['min'].append(np.min(reward_episode_set))
-            if np.mean(reward_episode_set) > 80:
-                agent.lr = 0.05
-                if np.mean(reward_episode_set) > 90:
-                    agent.lr = 0.01
+            if args.auto_learning_rate:
+                if np.mean(reward_episode_set) > 80:
+                    agent.lr = 0.05
+                    if np.mean(reward_episode_set) > 90:
+                        agent.lr = 0.01
             plot(record)
+            with open('q.txt', 'w') as f:
+                f.write(str(agent.q_table))
 
 
 if __name__ == "__main__":
